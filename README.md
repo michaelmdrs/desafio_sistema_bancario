@@ -2,7 +2,7 @@
 
 Este projeto implementa um sistema bancário simples em Python, desenvolvido como parte do desafio da Digital Innovation One (DIO). Ele permite realizar operações básicas como depósito, saque e visualização de extrato através de uma interface de linha de comando.
 
-## Funcionalidades Implementadas
+## Funcionalidades Implementadas Versão 1.0
 
 O sistema bancário atual oferece as seguintes funcionalidades:
 
@@ -10,6 +10,13 @@ O sistema bancário atual oferece as seguintes funcionalidades:
 *   **Saque:** Permite realizar saques com validações de saldo, limite máximo por saque (R$ 500) e um limite de **3 saques diários**.
 *   **Extrato:** Exibe o histórico de todas as transações (depósitos e saques) realizadas na conta, juntamente com o saldo atual.
 *   **Sair:** Encerra a execução do sistema.
+
+## Funcionalidades Implementadas Versão 2.0
+✅ Agora você terá:
+* **Cadastro de usuário com CPF único.**
+* **Criação de conta atrelada ao usuário.**
+* **Geração automática de número de conta.**
+* **Validação se o usuário já existe antes de criar uma conta.**
 
 ## Como Executar o Projeto
 
