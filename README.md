@@ -16,6 +16,6 @@ O sistema bancário atual oferece as seguintes funcionalidades:
 Para rodar o sistema bancário na sua máquina, siga os passos abaixo:
 
 1.  Certifique-se de ter o Python instalado (versão 3.6 ou superior é recomendada).
-2.  Clone este repositório ou baixe o arquivo principal do código Python (`sistema_bancario.py`, ou o nome que você utilizou).
+2.  Clone este repositório ou baixe o arquivo principal do código Python (`caixa_eletronico.py`, ou o nome que você utilizou).
 3.  Abra um terminal ou prompt de comando na pasta onde o arquivo Python está localizado.
 4.  Execute o script usando o comando:
