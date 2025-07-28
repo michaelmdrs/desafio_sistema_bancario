@@ -1,112 +1,78 @@
-def mensagem():
-  print(65 * "=")
-  txt = 'SISTEMA ONBANK ONLINE'
-  print(txt.center(60).upper())
-  print(65 * '=')
-  menu_text = 'MENU ONBANK'
-  frase = 'Escolha a opção desejada'
-  print(menu_text.center(65).upper())
-  print(frase.center(65).upper())
-  print()
-  menu = 'CADASTRO [1] | SAQUE [2] | DEPÓSITO [3] | EXTRATO [4] | SAIR [5]'
-  print(menu.center(65).upper())
-  print(65 * '=')
+class Pessoa():
+    def __init__(self, nome, cpf_cnpj):
+        self.nome = nome
+        self.cpf_cnpj = cpf_cnpj
 
-def saque(saldo):
-    valor = float(input('Digite o valor do saque: '))
-    if valor <= 0:
-        print('Valor inválido. Saque não realizado.')
-        return saldo, None
-    elif valor > 500:
-        print('Valor acima do permitido (R$ 500.00). Saque não realizado.')
-        return saldo, None
-    elif valor > saldo:
-        print('Saldo insuficiente. Saque não realizado.')
-        return saldo, None
-    else:
-        saldo -= valor
-        print('Saque realizado com sucesso.')
-        print(f'O valor do saque foi de R${valor:.2f}')
-        return saldo, valor
-
-def deposito(saldo):
-    valor = float(input('Digite o valor do depósito: '))
-    if valor <= 0:
-        print('Valor inválido. Depósito não realizado.')
-        return saldo, None
-    else:
-        saldo += valor
-        print('Depósito realizado com sucesso.')
-        print(f'O valor do depósito foi de R${valor:.2f}')
-        return saldo, valor
-
-def cadastro():
-    nome = input('Digite seu nome: ')
-    cpf = input('Digite seu CPF: ')
-    data_nascimento = input('Digite sua data de nascimento: ')
-    print('Cadastro realizado com sucesso')
-
-def sair():
-    print("Saindo do sistema. Obrigado por usar o ONBANK ONLINE!")
-
-def extrato(saldo, transacoes):
-    print("\n================ EXTRATO ================")
-    if not transacoes:
-        print("Não foram realizadas movimentações.")
-    else:
-        for transacao in transacoes:
-            print(transacao)
-    print(f"\nSaldo: R${saldo:.2f}")
-    print("==========================================")
+    def __str__(self):
+        return f"Nome: {self.nome}, CPF: {self.cpf_cnpj}"
 
 
-menu_opcao = {
-    1: cadastro,
-    2: saque,
-    3: deposito,
-    4: extrato,
-    5: sair
-}
+class Cliente(Pessoa):
+    def __init__(self, nome, cpf_cnpj, endereco, contas=None):
+        super().__init__(nome, str(cpf_cnpj))
+        self.endereco = endereco
+        self.contas = contas if contas is not None else []
 
-saldo = 0
-transacoes = []
-LIMITE_SAQUE = 3
-saques_realizados_hoje = 0
 
-while True:
-    try:
-        mensagem()
-        opcao = int(input('Digite a opção desejada: '))
+    def get_tipo_documento(self):
+        documento_limpo = ''.join(filter(str.isdigit, self.cpf_cnpj))
 
-        if opcao in menu_opcao:
-            opcao_selecionada = menu_opcao[opcao]
-
-            if opcao_selecionada == saque:
-                if saques_realizados_hoje >= LIMITE_SAQUE:
-                    print('Limite de saques diários excedido.')
-                    print('Saque não realizado.')
-                    print('Tente novamente amanhã.')
-                else:
-                    saldo, saque_valor = opcao_selecionada(saldo)
-                    if saque_valor is not None:
-                         transacoes.append(f"Saque: R${saque_valor:.2f}")
-                         saques_realizados_hoje += 1
-
-            elif opcao_selecionada == deposito:
-                saldo, deposito_valor = opcao_selecionada(saldo)
-                if deposito_valor is not None:
-                    transacoes.append(f"Depósito: R${deposito_valor:.2f}")
-            elif opcao_selecionada == extrato:
-                opcao_selecionada(saldo, transacoes)
-            elif opcao_selecionada == sair:
-                opcao_selecionada()
-                break
-            else:
-                opcao_selecionada()
-
+        if len(documento_limpo) == 11:
+            return 'CPF'
+        elif len(documento_limpo) == 14:
+            return 'CNPJ'
         else:
-            print('Opção inválida')
-            print('Tente novamente')
+            return 'Documento inválido'
 
-    except ValueError:
-        print('Entrada inválida. Por favor, digite um número.')
+    def adicionar_conta(self, conta):
+        self.contas.append(conta)
+
+
+class Conta():
+    def __init__(self, numero, agencia, saldo_inicial=0):
+        self.numero = numero
+        self.agencia = agencia
+        self._saldo = saldo_inicial
+
+    @property
+    def saldo(self):
+        return self._saldo
+
+    def depositar(self, valor):
+        if valor > 0:
+            self._saldo += valor
+            print(f'Depósito de R$ {valor:.2f} realizado. \nNovo saldo R$: {self._saldo}')
+        else:
+            print('Valor de depósito inválido.')
+
+    def sacar(self, valor):
+        if valor <= 0:
+            print('Valor de saque inválido.')
+        elif valor > self._saldo:
+            print('Saldo insuficiente')
+        else:
+            self._saldo -= valor
+            print(f'Saque de R$ {valor:.2f} realizado. \nNovo saldo R$: {self._saldo}')
+
+    def __str__(self):
+        return f"Conta: {self.numero}, Agência: {self.agencia}, Saldo: R$ {self.saldo:.2f}"
+
+    
+
+
+cliente_maria = Cliente('Maria', '12345678910', 'Rua Sem Nome')
+conta_maria_corrente = Conta('0001-5', '001', 1500)
+conta_maria_poupanca = Conta('0002-3', '001', 500)
+
+cliente_maria.adicionar_conta(conta_maria_corrente)
+cliente_maria.adicionar_conta(conta_maria_poupanca)
+
+print(f'Cliente cadastrado: {cliente_maria.nome}, CPF/CNPJ: {cliente_maria.cpf_cnpj}')
+print(f'Tipo de documento: {cliente_maria.get_tipo_documento()}')
+
+print(f'\nContas de {cliente_maria.nome}')
+
+for conta in cliente_maria.contas:
+    print(conta)
+
+print('=' * 60)
