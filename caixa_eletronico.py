@@ -1,4 +1,6 @@
 # Sistema Bancário - Caixa Eletrônico V2.0
+import datetime, time
+
 usuarios = []
 conta = []
 numero_conta = 1
@@ -24,6 +26,16 @@ def mensagem():
     print(65 * '=')
 
 
+def log_transacoes(func):
+    def wrapper(*args, **kwargs):
+        hora = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        resultado = func(*args, **kwargs)
+        print(f'\n[LOG] Transação: {func.__name__.upper()} | Data e Hora: {hora}')
+        return resultado
+    return wrapper
+
+
+@log_transacoes
 def saque(saldo):
     valor = float(input('Digite o valor do saque: '))
     if valor <= 0:
@@ -41,7 +53,7 @@ def saque(saldo):
         print(f'O valor do saque foi de R${valor:.2f}')
         return saldo, valor
 
-
+@log_transacoes
 def deposito(saldo):
     valor = float(input('Digite o valor do depósito: '))
     if valor <= 0:
@@ -53,7 +65,7 @@ def deposito(saldo):
         print(f'O valor do depósito foi de R${valor:.2f}')
         return saldo, valor
 
-
+@log_transacoes
 def cria_conta(contas, usuarios, numero_conta):
     print("Bem-vindo ao ONBANK ONLINE!")
     print("Para criar uma conta, por favor, preencha as informações solicitadas.")
@@ -74,7 +86,7 @@ def cria_conta(contas, usuarios, numero_conta):
     print(f'Titular: {usuario["nome"]}')
     return numero_conta + 1
 
-
+@log_transacoes
 def cadastrar_usuario():
     nome = input('Digite seu nome: ').strip().title()
     cpf = input('Digite seu CPF: ').strip()
@@ -93,11 +105,12 @@ def cadastrar_usuario():
     })
     print(f'Usuário {nome} cadastrado com sucesso!')
 
-
+@log_transacoes
 def sair():
+    sleep(2)
     print("Saindo do sistema. Obrigado por usar o ONBANK ONLINE!")
 
-
+@log_transacoes
 def extrato(saldo, transacoes):
     print("\n================ EXTRATO ================")
     if not transacoes:
