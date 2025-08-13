@@ -1,6 +1,7 @@
 import textwrap
+import pytz
 from abc import ABC, abstractclassmethod, abstractproperty
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 
 class ContasIterador:
@@ -33,6 +34,8 @@ class Cliente:
         self.indice_conta = 0
 
     def realizar_transacao(self, conta, transacao):
+        # TODO: validar o número de transações e validar a operação se for necessário
+        # print("\n** Você excedeu o número de transações permitidas para hoje! **")
         transacao.registrar(conta)
 
     def adicionar_conta(self, conta):
@@ -161,6 +164,11 @@ class Historico:
         for transacao in self._transacoes:
             if tipo_transacao is None or transacao["tipo"].lower() == tipo_transacao.lower():
                 yield transacao
+
+
+    # TODO: filtrar todos as transações realizadas no dia
+    def transacoes_dia(self):
+        pass
 
 
 class Transacao(ABC):
