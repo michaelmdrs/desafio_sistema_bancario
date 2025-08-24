@@ -35,7 +35,8 @@ class Cliente:
 
     def realizar_transacao(self, conta, transacao):
         # TODO: validar o número de transações e validar a operação se for necessário
-        # print("\n** Você excedeu o número de transações permitidas para hoje! **")
+        if len(conta.historico.transacoes_dia()) >= 3:
+            print('\n*** Você excedeu o número de transações permitidas para hoje! ***')
         transacao.registrar(conta)
 
     def adicionar_conta(self, conta):
@@ -48,6 +49,9 @@ class PessoaFisica(Cliente):
         self.nome = nome
         self.data_nascimento = data_nascimento
         self.cpf = cpf
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__}: ('{self.cpf}')"
 
 
 class Conta:
@@ -135,6 +139,11 @@ class ContaCorrente(Conta):
 
         return False
 
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__}: ('{self.agencia}', '{self.numero}', '{self.cliente.nome}')>"
+
+
     def __str__(self):
         return f"""\
             Agência:\t{self.agencia}
@@ -168,7 +177,8 @@ class Historico:
 
     # TODO: filtrar todos as transações realizadas no dia
     def transacoes_dia(self):
-        pass
+        transacao_hoje = datetime.now().strftime('%Y-%m-%d')
+        return [transacao for transacao in self._transacoes if transacao["data"].startswith(transacao_hoje)]
 
 
 class Transacao(ABC):
@@ -215,7 +225,12 @@ class Deposito(Transacao):
 def log_transacao(func):
     def envelope(*args, **kwargs):
         resultado = func(*args, **kwargs)
-        print(f"{datetime.now()}: {func.__name__.upper()}")
+        data_hora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # TODO: alterar a implementação para salvar o arquivo
+        with open('log.txt', 'a') as arquivo:
+            arquivo.write(f"[{data_hora}] Função '{func.__name__}' executada com argumentos {args} e {kwargs}. "
+                          f"Retornou {resultado}\n"
+                          )
         return resultado
 
     return envelope
@@ -321,7 +336,7 @@ def criar_cliente(clientes):
     cliente = filtrar_cliente(cpf, clientes)
 
     if cliente:
-        print("\n@@@ Já existe cliente com esse CPF! @@@")
+        print("\n=== Já existe cliente com esse CPF! ===")
         return
 
     nome = input("Informe o nome completo: ")
