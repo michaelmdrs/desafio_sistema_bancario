@@ -3,6 +3,7 @@
 import textwrap
 from abc import ABC, abstractclassmethod, abstractproperty
 from datetime import datetime
+import time
 
 
 class ContasIterador:
@@ -397,6 +398,8 @@ def main():
             listar_contas(contas)
 
         elif opcao == "q":
+            time.sleep(2)
+            print('Obrigado por utilizar o nosso sistema, volte sempre!')
             break
 
         else:
